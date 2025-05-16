@@ -1194,24 +1194,25 @@
                 });
             });
             // Newsletter subscription form handler
-            document.getElementById('newsletterForm').addEventListener('submit', function(event) {
+                document.getElementById('newsletterForm').addEventListener('submit', async function(event) {
                 event.preventDefault();
                 
                 // Get the email value
                 const email = this.querySelector('input[name="email"]').value;
+                const messageDiv = document.getElementById('subscribeMessage');
                 
-                // Submit the form data using fetch
-                fetch(this.action, {
-                    method: this.method,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams(new FormData(this))
-                })
-                .then(response => {
+                try {
+                    // Submit the form data using fetch
+                    const response = await fetch(this.action, {
+                        method: this.method,
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams(new FormData(this))
+                    });
+                    
                     // Show success message
-                    const messageDiv = document.getElementById('subscribeMessage');
                     messageDiv.textContent = 'Thank you for subscribing to our newsletter!';
                     messageDiv.style.display = 'block';
                     
@@ -1222,13 +1223,12 @@
                     setTimeout(() => {
                         messageDiv.style.display = 'none';
                     }, 5000);
-                })
-                .catch(error => {
+                } catch (error) {
                     console.error('Error:', error);
                     // Show error message if needed
-                    document.getElementById('subscribeMessage').textContent = 'There was an error. Please try again.';
-                    document.getElementById('subscribeMessage').style.display = 'block';
-                });
+                    messageDiv.textContent = 'There was an error. Please try again.';
+                    messageDiv.style.display = 'block';
+                }
             });
         </script>
 </body>
